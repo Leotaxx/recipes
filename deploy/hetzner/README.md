@@ -15,8 +15,11 @@ Required GitHub secrets for CD:
 | `HETZNER_SSH_KEY` | Private SSH key for deployment |
 | `HETZNER_PORT` | SSH port, optional, defaults to `22` |
 | `POSTGRES_PASSWORD` | Runtime database password |
+| `APP_HTTP_PORT` | Optional public HTTP port, defaults to `80` |
 | `GHCR_USERNAME` | Optional GHCR user, defaults to workflow actor |
 | `GHCR_TOKEN` | Optional GHCR token if packages are private |
+
+If deployment fails with `Bind for 0.0.0.0:80 failed: port is already allocated`, either stop the existing service using port 80 or set `APP_HTTP_PORT` to another value such as `8080` and access the app with `http://SERVER_IP:8080`.
 
 ## Release Flow
 
@@ -73,4 +76,3 @@ The orchestration layer is disposable:
 4. Run the `deploy-hetzner` workflow.
 5. Restore the backup if required.
 6. Move DNS or public access to the new server.
-

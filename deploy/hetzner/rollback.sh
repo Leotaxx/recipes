@@ -17,6 +17,7 @@ docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 cat > .env <<EOF
 REGISTRY=$REGISTRY
 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+APP_HTTP_PORT=${APP_HTTP_PORT:-80}
 ACTIVE_COLOR=$TARGET_COLOR
 BLUE_TAG=$BLUE_TAG
 GREEN_TAG=$GREEN_TAG
