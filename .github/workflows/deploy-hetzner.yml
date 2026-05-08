@@ -83,6 +83,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check deployment secrets
+        env:
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          missing=0
+          for name in HETZNER_HOST HETZNER_USER HETZNER_SSH_KEY POSTGRES_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is not set. Add it in GitHub repository or production environment secrets."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Configure SSH
         env:
           HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
@@ -110,7 +126,7 @@ jobs:
           HETZNER_PORT: ${{ secrets.HETZNER_PORT || '22' }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           GHCR_USERNAME: ${{ secrets.GHCR_USERNAME || github.actor }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.GITHUB_TOKEN }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || github.token }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           ssh -i ~/.ssh/hetzner -p "$HETZNER_PORT" "$HETZNER_USER@$HETZNER_HOST" \
