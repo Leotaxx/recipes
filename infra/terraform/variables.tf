@@ -15,6 +15,12 @@ variable "location" {
   default     = "westeurope"
 }
 
+variable "postgres_location" {
+  description = "Azure region for PostgreSQL Flexible Server. Some student subscriptions restrict PostgreSQL offers by region."
+  type        = string
+  default     = "northeurope"
+}
+
 variable "postgres_admin_password" {
   description = "PostgreSQL administrator password."
   type        = string

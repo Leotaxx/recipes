@@ -1,4 +1,4 @@
 environment             = "dev"
 location                = "westeurope"
+postgres_location       = "northeurope"
 postgres_admin_password = "ReplaceWithAStrongPassword123!"
-

@@ -50,7 +50,7 @@ resource "azurerm_container_app_environment" "main" {
 resource "azurerm_postgresql_flexible_server" "main" {
   name                   = "pg-${local.name}"
   resource_group_name    = azurerm_resource_group.main.name
-  location               = azurerm_resource_group.main.location
+  location               = var.postgres_location
   version                = "16"
   administrator_login    = local.db_user
   administrator_password = var.postgres_admin_password
@@ -215,4 +215,3 @@ resource "azurerm_container_app" "frontend" {
     }
   }
 }
-
