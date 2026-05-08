@@ -11,13 +11,13 @@ output "acr_name" {
 }
 
 output "frontend_url" {
-  value = "https://${azurerm_container_app.frontend.latest_revision_fqdn}"
+  value = "https://${azurerm_container_app.frontend.ingress[0].fqdn}"
 }
 
 output "catalog_api_url" {
-  value = "https://${azurerm_container_app.catalog_api.latest_revision_fqdn}"
+  value = "https://${azurerm_container_app.catalog_api.ingress[0].fqdn}"
 }
 
 output "recommendation_api_url" {
-  value = "https://${azurerm_container_app.recommendation_api.latest_revision_fqdn}"
+  value = "https://${azurerm_container_app.recommendation_api.ingress[0].fqdn}"
 }

@@ -164,7 +164,7 @@ resource "azurerm_container_app" "recommendation_api" {
       memory = "0.5Gi"
       env {
         name  = "CATALOG_API_URL"
-        value = "https://${azurerm_container_app.catalog_api.latest_revision_fqdn}"
+        value = "https://${azurerm_container_app.catalog_api.ingress[0].fqdn}"
       }
     }
   }
@@ -207,11 +207,11 @@ resource "azurerm_container_app" "frontend" {
       memory = "0.5Gi"
       env {
         name  = "CATALOG_API_URL"
-        value = "https://${azurerm_container_app.catalog_api.latest_revision_fqdn}"
+        value = "https://${azurerm_container_app.catalog_api.ingress[0].fqdn}"
       }
       env {
         name  = "RECOMMENDATION_API_URL"
-        value = "https://${azurerm_container_app.recommendation_api.latest_revision_fqdn}"
+        value = "https://${azurerm_container_app.recommendation_api.ingress[0].fqdn}"
       }
     }
   }
