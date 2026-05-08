@@ -67,7 +67,7 @@ jobs:
         run: docker build -t recipeops-${{ matrix.service }}:${{ github.sha }} services/${{ matrix.service }}
 
       - name: Vulnerability scan
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: recipeops-${{ matrix.service }}:${{ github.sha }}
           format: sarif
