@@ -56,3 +56,8 @@ The CD workflow expects these repository or environment secrets:
 - `TF_STATE_KEY`
 
 The Azure identity should have permission to create the resources in this module and push images to the Azure Container Registry.
+
+For GitHub Actions OIDC login, add federated credentials to the Azure app registration for each deployment environment used by the `cd` workflow:
+
+- `repo:Leotaxx/recipes:environment:dev`
+- `repo:Leotaxx/recipes:environment:prod`
