@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RecipeOps</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <section class="toolbar">
+        <div>
+          <p class="eyebrow">Recipe workspace</p>
+          <h1>RecipeOps</h1>
+        </div>
+        <button id="refresh">Refresh</button>
+      </section>
+
+      <section class="layout">
+        <form id="recipe-form" class="panel">
+          <h2>Add recipe</h2>
+          <label>Title <input name="title" required minlength="2"></label>
+          <label>Cuisine <input name="cuisine" required minlength="2"></label>
+          <label>Difficulty
+            <select name="difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+          <label>Ingredients <input name="ingredients" placeholder="comma separated" required></label>
+          <label>Steps <textarea name="steps" required minlength="10"></textarea></label>
+          <button type="submit">Create</button>
+        </form>
+
+        <section class="panel">
+          <h2>Recipes</h2>
+          <div id="recipes" class="list"></div>
+        </section>
+
+        <section class="panel accent">
+          <h2>Recommendations</h2>
+          <p id="reason"></p>
+          <div id="recommendations" class="list"></div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+.DS_Store
+node_modules
+node_modules/
+__pycache__/
+.pytest_cache/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+backend.tf
+.env
+output/
+scratch/

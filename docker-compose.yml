@@ -1,0 +1,55 @@
+name: recipeops
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: recipes
+      POSTGRES_PASSWORD: recipes
+      POSTGRES_DB: recipes
+    ports:
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recipes -d recipes"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  catalog-api:
+    build: ./services/catalog-api
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgres://recipes:recipes@postgres:5432/recipes
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  recommendation-api:
+    build: ./services/recommendation-api
+    environment:
+      PORT: 3002
+      CATALOG_API_URL: http://catalog-api:3001
+    ports:
+      - "3002:3002"
+    depends_on:
+      - catalog-api
+
+  frontend:
+    build: ./services/frontend
+    environment:
+      PORT: 8080
+      CATALOG_API_URL: http://catalog-api:3001
+      RECOMMENDATION_API_URL: http://recommendation-api:3002
+    ports:
+      - "8080:8080"
+    depends_on:
+      - catalog-api
+      - recommendation-api
+
+volumes:
+  pgdata:
