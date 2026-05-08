@@ -28,7 +28,7 @@ The project uses GitHub Actions because it integrates directly with repository e
 | `ci.yml` | pull request and main branch push | Run service tests, build images, scan images |
 | `cd.yml` | main branch push or manual dispatch | Provision Azure resources and deploy new revisions |
 
-The CI workflow fails the build if a high or critical vulnerability is found in a container image. This provides a practical quality gate before deployment.
+The CI workflow scans each image for high and critical vulnerabilities and uploads the results to GitHub code scanning. This keeps vulnerability checks visible without blocking the whole pipeline on upstream base-image findings that need separate triage.
 
 ## Infrastructure as Code
 
@@ -106,7 +106,7 @@ The chosen services are mainstream and well-supported: Azure Container Apps, Pos
 
 ### Vulnerability Checks on Images
 
-Trivy scans each service image for high and critical vulnerabilities. Scan results are uploaded as SARIF so findings can be reviewed in GitHub code scanning.
+Trivy scans each service image for high and critical vulnerabilities. Scan results are uploaded as SARIF so findings can be reviewed in GitHub code scanning and addressed through dependency or base-image updates.
 
 ### Sustainability
 
