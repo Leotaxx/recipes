@@ -47,6 +47,18 @@ export TF_STATE_STORAGE_ACCOUNT="strecipeopstfstate123"
 
 Cloud deployment is intentionally manual. Add the Azure and Terraform state secrets listed in `infra/terraform/README.md`, then run the `cd` workflow from GitHub Actions.
 
+## Hetzner CD
+
+The repository also includes a Hetzner VM deployment path in `deploy/hetzner`.
+
+- `cloud-init.yaml` rebuilds a replacement VM with Docker and scheduled backups.
+- `compose.yml` runs PostgreSQL plus blue/green service sets behind Nginx.
+- `deploy.sh` starts the inactive color, health-checks it, then switches traffic.
+- `rollback.sh` switches traffic back to the previous color.
+- `backup.sh` and `restore.sh` handle PostgreSQL recovery.
+
+The `deploy-hetzner` GitHub Actions workflow builds `linux/amd64` images, pushes them to GHCR, then deploys over SSH.
+
 ## Architecture
 
 ```mermaid

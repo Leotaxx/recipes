@@ -25,6 +25,15 @@
 6. Show `az containerapp update` creating a new revision.
 7. Explain blue/green support through Container Apps multiple revision mode and traffic weights.
 
+## 3b. Hetzner CD proof
+
+1. Open the GitHub Actions `deploy-hetzner` workflow.
+2. Show image builds tagged with the Git commit SHA and pushed to GHCR.
+3. Show SSH deployment to `/opt/recipeops`.
+4. Explain `deploy.sh`: start inactive color, health-check it, then reload Nginx.
+5. Show `rollback.sh` switching traffic back to the previous color.
+6. Show `backup.sh` and the daily cron entry from `cloud-init.yaml`.
+
 ## 4. Recovery proof
 
 1. Explain that infrastructure can be destroyed and recreated with Terraform.
