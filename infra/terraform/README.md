@@ -55,4 +55,10 @@ The CD workflow expects these repository or environment secrets:
 - `TF_STATE_CONTAINER`
 - `TF_STATE_KEY`
 
+The workflow also accepts the existing Azure App Service secret names from the previous project as fallbacks for Azure login:
+
+- `AZUREAPPSERVICE_CLIENTID_F0C8F672461C4DF08794CBC1C29908E5`
+- `AZUREAPPSERVICE_TENANTID_9CB409C1F8ED4FDFAF0DFB92F3924FDE`
+- `AZUREAPPSERVICE_SUBSCRIPTIONID_C1D5F04E9B1E4596A5E3466609A489D0`
+
 The Azure identity should have permission to create the resources in this module and push images to the Azure Container Registry.
