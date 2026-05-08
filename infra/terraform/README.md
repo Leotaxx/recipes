@@ -9,7 +9,7 @@ This module provisions the Azure side of the RecipeOps microservice deployment:
 - Three Container Apps
 - PostgreSQL Flexible Server and database
 
-`location` controls the main application resources. `postgres_location` controls PostgreSQL separately because student subscriptions can restrict PostgreSQL Flexible Server offers in otherwise valid Azure regions.
+`location` controls the main application resources. `postgres_location` controls PostgreSQL separately because student subscriptions can restrict PostgreSQL Flexible Server offers in otherwise valid Azure regions. The PostgreSQL server name includes the PostgreSQL region to avoid name conflicts with failed regional provisioning attempts.
 
 ## Local Validation
 

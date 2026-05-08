@@ -5,9 +5,10 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  name    = "recipeops-${var.environment}-${random_string.suffix.result}"
-  db_name = "recipes"
-  db_user = "recipeadmin"
+  name              = "recipeops-${var.environment}-${random_string.suffix.result}"
+  postgres_location = replace(lower(var.postgres_location), " ", "")
+  db_name           = "recipes"
+  db_user           = "recipeadmin"
   tags = {
     application = "recipeops"
     environment = var.environment
@@ -48,7 +49,7 @@ resource "azurerm_container_app_environment" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server" "main" {
-  name                   = "pg-${local.name}"
+  name                   = "pg-${local.name}-${local.postgres_location}"
   resource_group_name    = azurerm_resource_group.main.name
   location               = var.postgres_location
   version                = "16"
