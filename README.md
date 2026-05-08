@@ -45,6 +45,8 @@ export TF_STATE_STORAGE_ACCOUNT="strecipeopstfstate123"
 ./scripts/bootstrap-terraform-state.sh
 ```
 
+Cloud deployment is intentionally manual. Add the Azure and Terraform state secrets listed in `infra/terraform/README.md`, then run the `cd` workflow from GitHub Actions.
+
 ## Architecture
 
 ```mermaid

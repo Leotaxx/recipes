@@ -9,8 +9,6 @@ on:
         default: dev
         type: choice
         options: [dev, prod]
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -29,6 +27,35 @@ jobs:
       resource_group_name: ${{ steps.tfout.outputs.resource_group_name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check deployment secrets
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+          TF_STATE_RESOURCE_GROUP: ${{ secrets.TF_STATE_RESOURCE_GROUP }}
+          TF_STATE_STORAGE_ACCOUNT: ${{ secrets.TF_STATE_STORAGE_ACCOUNT }}
+          TF_STATE_CONTAINER: ${{ secrets.TF_STATE_CONTAINER }}
+          TF_STATE_KEY: ${{ secrets.TF_STATE_KEY }}
+        run: |
+          missing=0
+          for name in \
+            AZURE_CLIENT_ID \
+            AZURE_TENANT_ID \
+            AZURE_SUBSCRIPTION_ID \
+            POSTGRES_ADMIN_PASSWORD \
+            TF_STATE_RESOURCE_GROUP \
+            TF_STATE_STORAGE_ACCOUNT \
+            TF_STATE_CONTAINER \
+            TF_STATE_KEY
+          do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing required deployment secret: $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
 
       - name: Azure login
         uses: azure/login@v2

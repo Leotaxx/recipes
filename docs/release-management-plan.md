@@ -26,7 +26,7 @@ The project uses GitHub Actions because it integrates directly with repository e
 | Workflow | Trigger | Purpose |
 |---|---|---|
 | `ci.yml` | pull request and main branch push | Run service tests, build images, scan images |
-| `cd.yml` | main branch push or manual dispatch | Provision Azure resources and deploy new revisions |
+| `cd.yml` | manual dispatch | Provision Azure resources and deploy new revisions |
 
 The CI workflow scans each image for high and critical vulnerabilities and uploads the results to GitHub code scanning. This keeps vulnerability checks visible without blocking the whole pipeline on upstream base-image findings that need separate triage.
 
@@ -57,7 +57,7 @@ Changes follow this sequence:
 1. Developer opens a pull request.
 2. CI runs tests, builds images, and scans images.
 3. Review approval is required before merge.
-4. Main branch deployment runs Terraform.
+4. Deployment is started manually from the `cd` workflow after Azure secrets are configured.
 5. Images are pushed with the commit SHA.
 6. Container Apps are updated to new revisions.
 7. Logs and health endpoints are checked.
