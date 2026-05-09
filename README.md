@@ -119,5 +119,6 @@ The Azure CD workflow is manual because the project tenant blocked the app regis
 
 - `docs/release-management-plan.md`: full RMP report
 - `docs/demo-script.md`: demo sequence and commands
+- `docs/demonstration-notes.md`: presenter notes for the live demonstration
 - `docs/presentation.md`: slide outline
 - `deploy/hetzner/README.md`: Hetzner runbook
