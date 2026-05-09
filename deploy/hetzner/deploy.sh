@@ -69,7 +69,7 @@ healthcheck "$NEXT_COLOR"
 
 write_env "$NEXT_COLOR"
 write_nginx "$NEXT_COLOR"
-docker compose up -d nginx
+docker compose up -d --force-recreate nginx
 docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 
 echo "Deployed $IMAGE_TAG to $NEXT_COLOR. Previous active color was $CURRENT_COLOR."

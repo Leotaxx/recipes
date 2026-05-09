@@ -11,7 +11,7 @@ set +a
 TARGET_COLOR="${ACTIVE_COLOR:?Set ACTIVE_COLOR to blue or green for rollback.}"
 
 sed "s/\${ACTIVE_COLOR}/$TARGET_COLOR/g" nginx.conf.template > nginx.conf
-docker compose up -d nginx
+docker compose up -d --force-recreate nginx
 docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 
 cat > .env <<EOF
