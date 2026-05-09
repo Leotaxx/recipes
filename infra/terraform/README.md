@@ -1,6 +1,6 @@
-# Terraform Deployment
+# Azure Terraform Deployment
 
-This module provisions the Azure side of the RecipeOps microservice deployment:
+This module provisions the Azure alternative for the RecipeOps microservice deployment:
 
 - Resource Group
 - Log Analytics Workspace
@@ -46,7 +46,7 @@ The Terraform provider is configured with `skip_provider_registration = true` so
 
 ## GitHub Actions Secrets
 
-The CD workflow expects these repository or environment secrets:
+The manual Azure `cd` workflow expects these repository or environment secrets:
 
 - `AZURE_CLIENT_ID`
 - `AZURE_TENANT_ID`
@@ -63,3 +63,5 @@ For GitHub Actions OIDC login, add federated credentials to the Azure app regist
 
 - `repo:Leotaxx/recipes:environment:dev`
 - `repo:Leotaxx/recipes:environment:prod`
+
+If the Azure tenant does not allow the current user to create app registrations, service principals, or federated credentials, this workflow cannot be fully automated without administrator support. In that case, use the working Hetzner CD route in `deploy/hetzner` for the demonstration and keep this module as the Terraform/IaC managed-cloud option in the RMP.

@@ -1,14 +1,31 @@
 # RecipeOps Enterprise Microservice CI/CD CA
 
-This repository contains a continuous delivery implementation for a small recipe platform:
+RecipeOps is a microservice recipe platform built for an enterprise-style CI/CD coursework assignment.
 
-- `frontend`: Node/Express web UI for recipe management
+It contains:
+
+- `frontend`: Node/Express web UI
 - `catalog-api`: Node/Express REST API backed by PostgreSQL
 - `recommendation-api`: Python/FastAPI service that calls `catalog-api`
-- `postgres`: local data layer for development
-- `infra/terraform`: Azure Container Apps, Azure Container Registry, PostgreSQL Flexible Server, Log Analytics, and Key Vault
-- `.github/workflows`: CI and CD pipeline definitions
-- `docs`: release management plan and presentation material
+- `postgres`: local and Hetzner data layer
+- `deploy/hetzner`: working GitHub Actions to Hetzner blue/green deployment
+- `infra/terraform`: Azure Container Apps infrastructure-as-code alternative
+- `.github/workflows`: CI, Azure CD, and Hetzner CD workflows
+- `docs`: release management plan, demo script, and presentation outline
+
+## Architecture
+
+```mermaid
+flowchart LR
+  User["User"] --> Nginx["Nginx gateway"]
+  Nginx --> FE["frontend"]
+  Nginx --> Catalog["catalog-api"]
+  Nginx --> Recs["recommendation-api"]
+  FE --> Catalog
+  FE --> Recs
+  Recs --> Catalog
+  Catalog --> DB[("PostgreSQL")]
+```
 
 ## Local Demo
 
@@ -18,9 +35,9 @@ docker compose up --build
 
 Then open:
 
-- Frontend: http://localhost:8080
-- Catalog API health: http://localhost:3001/health
-- Recommendation API health: http://localhost:3002/health
+- Frontend: `http://localhost:8080`
+- Catalog API health: `http://localhost:3001/health`
+- Recommendation API health: `http://localhost:3002/health`
 
 ## Run Tests Locally
 
@@ -29,7 +46,58 @@ npm --prefix services/catalog-api test
 python3 -m pytest services/recommendation-api/tests
 ```
 
-## Terraform
+## Working CD: Hetzner
+
+The demonstrated CD route is:
+
+```text
+GitHub Actions -> GHCR -> SSH -> Hetzner Docker Compose -> Nginx blue/green switch
+```
+
+`deploy-hetzner.yml` builds `linux/amd64` images for all services, tags them with the Git commit SHA, pushes them to GHCR, then deploys to `/opt/recipeops` on the Hetzner VM.
+
+Required GitHub Actions secrets:
+
+| Secret | Purpose |
+|---|---|
+| `HETZNER_HOST` | Server IP or DNS name |
+| `HETZNER_USER` | SSH user, preferably `deploy` |
+| `HETZNER_SSH_KEY` | Private SSH key for deployment |
+| `POSTGRES_PASSWORD` | Runtime PostgreSQL password |
+| `HETZNER_PORT` | Optional, defaults to `22` |
+| `APP_HTTP_PORT` | Optional, defaults to `80` |
+| `GHCR_USERNAME` | Optional GHCR username |
+| `GHCR_TOKEN` | Optional GHCR read token if packages are private |
+
+Useful server checks:
+
+```bash
+cd /opt/recipeops
+cat .env
+docker ps --format 'table {{.Names}}\t{{.Ports}}'
+```
+
+Public checks:
+
+```bash
+curl http://SERVER_IP
+curl http://SERVER_IP/api/catalog/health
+curl http://SERVER_IP/api/catalog/recipes
+curl http://SERVER_IP/api/recommendations/health
+```
+
+Rollback:
+
+```bash
+cd /opt/recipeops
+ACTIVE_COLOR=blue ./rollback.sh
+```
+
+Use `green` instead if green is the known-good color.
+
+## Terraform Azure Alternative
+
+The Azure Terraform module is retained as the managed cloud/IaC option:
 
 ```bash
 terraform -chdir=infra/terraform init -backend=false
@@ -45,27 +113,11 @@ export TF_STATE_STORAGE_ACCOUNT="strecipeopstfstate123"
 ./scripts/bootstrap-terraform-state.sh
 ```
 
-Cloud deployment is intentionally manual. Add the Azure and Terraform state secrets listed in `infra/terraform/README.md`, then run the `cd` workflow from GitHub Actions.
+The Azure CD workflow is manual because the project tenant blocked the app registration, service principal, and federated credential setup required for fully automated GitHub OIDC deployment. See `infra/terraform/README.md`.
 
-## Hetzner CD
+## Documentation
 
-The repository also includes a Hetzner VM deployment path in `deploy/hetzner`.
-
-- `cloud-init.yaml` rebuilds a replacement VM with Docker and scheduled backups.
-- `compose.yml` runs PostgreSQL plus blue/green service sets behind Nginx.
-- `deploy.sh` starts the inactive color, health-checks it, then switches traffic.
-- `rollback.sh` switches traffic back to the previous color.
-- `backup.sh` and `restore.sh` handle PostgreSQL recovery.
-
-The `deploy-hetzner` GitHub Actions workflow builds `linux/amd64` images, pushes them to GHCR, then deploys over SSH.
-
-## Architecture
-
-```mermaid
-flowchart LR
-  User[User] --> FE[frontend]
-  FE --> Catalog[catalog-api]
-  FE --> Recs[recommendation-api]
-  Recs --> Catalog
-  Catalog --> DB[(PostgreSQL)]
-```
+- `docs/release-management-plan.md`: full RMP report
+- `docs/demo-script.md`: demo sequence and commands
+- `docs/presentation.md`: slide outline
+- `deploy/hetzner/README.md`: Hetzner runbook

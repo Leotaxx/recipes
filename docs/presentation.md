@@ -2,32 +2,40 @@
 
 ## Slide 1: Title
 
-RecipeOps: CI/CD for a microservice recipe platform.
+RecipeOps: automated CI/CD for a microservice recipe platform.
 
-## Slide 2: Architecture
+## Slide 2: Application Architecture
 
-Frontend, catalog API, recommendation API, and PostgreSQL are separated by clear service contracts. The recommendation API calls the catalog API, proving service-to-service communication.
+Frontend, catalog API, recommendation API, PostgreSQL, and Nginx are separated by clear responsibilities. The recommendation API calls the catalog API over HTTP, proving service-to-service communication.
 
-## Slide 3: Pipeline
+## Slide 3: CI Pipeline
 
-Pull requests run tests, image builds, and Trivy scans. Main branch deployments run Terraform, push images to ACR, and update Azure Container Apps revisions.
+Pull requests run service tests, Docker image builds, Terraform validation, and Trivy scans. Scan results are uploaded to GitHub code scanning as SARIF.
 
-## Slide 4: IaC
+## Slide 4: CD Pipeline
 
-Terraform provisions the resource group, Container Apps environment, Azure Container Registry, PostgreSQL Flexible Server, firewall rule, and Log Analytics workspace.
+Main branch deployments use GitHub Actions to build `linux/amd64` images, tag them with the Git commit SHA, push them to GHCR, SSH to Hetzner, and run the release script.
 
-## Slide 5: Release Strategy
+## Slide 5: Infrastructure as Code
 
-Azure Container Apps runs in multiple revision mode. New releases create revisions, health is checked, and traffic can be shifted gradually or rolled back to the previous revision.
+Hetzner provisioning uses `cloud-init.yaml` for Docker, firewall rules, `/opt/recipeops`, and scheduled backups. Runtime orchestration uses Docker Compose. Azure Terraform remains as the managed cloud IaC alternative.
 
-## Slide 6: Operations
+## Slide 6: Blue/Green Release Strategy
 
-Health endpoints, Log Analytics, image scanning, PostgreSQL backups, and environment-scoped GitHub approvals create a repeatable operational model.
+The VM runs blue and green service sets behind Nginx. New releases start the inactive color, pass health checks, then switch traffic. The previous color remains running for immediate rollback.
 
-## Slide 7: Evaluation
+## Slide 7: Change Management
 
-The chosen design balances cost, automation, scaling, security, and support. Container Apps reduces cluster maintenance compared with AKS while retaining revision-based deployment control.
+Every release is linked to a Git commit SHA. All service images use the same version tag. Deployment secrets are stored in GitHub Actions. The gateway is force-recreated each release to avoid stale port mappings.
 
-## Slide 8: Demo
+## Slide 8: Recovery
 
-Show local app, service health, CI workflow, Terraform apply, pushed images, deployed frontend URL, and rollback procedure.
+Backups are created with `pg_dump` and stored under `/opt/recipeops/backups`. Recovery uses a replacement VM, the same cloud-init configuration, a rerun of the CD workflow, and `restore.sh`.
+
+## Slide 9: Evaluation
+
+The chosen route balances cost, automation, rollback, and repeatability. Hetzner is simple and cost-predictable for the demo; Azure Container Apps remains the stronger elastic scaling option when identity permissions are available.
+
+## Slide 10: Demo
+
+Show local app, CI workflow, successful `deploy-hetzner` run, GHCR image tags, `docker ps`, public app URL, health endpoints, rollback script, and backup file.
