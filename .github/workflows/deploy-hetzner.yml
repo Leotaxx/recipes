@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
+      - "deploy/hetzner/README.md"
+      - "infra/terraform/README.md"
 
 permissions:
   contents: read
