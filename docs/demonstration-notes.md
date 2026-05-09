@@ -116,6 +116,13 @@ cd /opt/recipeops
 ls -lh backups
 ```
 
+If backup permissions fail after switching from root to a `deploy` user, run:
+
+```bash
+sudo chown -R deploy:deploy /opt/recipeops/backups
+sudo chmod 775 /opt/recipeops/backups
+```
+
 Explain:
 
 - Backups are PostgreSQL dumps.

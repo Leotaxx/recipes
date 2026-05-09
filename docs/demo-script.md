@@ -92,6 +92,13 @@ cd /opt/recipeops
 ls -lh backups
 ```
 
+If the server was originally provisioned as root and later changed to a `deploy` user, fix backup ownership first:
+
+```bash
+sudo chown -R deploy:deploy /opt/recipeops/backups
+sudo chmod 775 /opt/recipeops/backups
+```
+
 3. Explain recovery:
    - rebuild VM with `cloud-init.yaml`
    - update `HETZNER_HOST`

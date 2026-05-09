@@ -17,7 +17,9 @@ chown -R deploy:deploy /home/deploy/.ssh
 chmod 700 /home/deploy/.ssh
 chmod 600 /home/deploy/.ssh/authorized_keys
 mkdir -p /opt/recipeops
+mkdir -p /opt/recipeops/backups
 chown -R deploy:deploy /opt/recipeops
+chmod 775 /opt/recipeops/backups
 ```
 
 Test access:
@@ -157,6 +159,13 @@ Manual backup:
 
 ```bash
 ssh deploy@SERVER_IP 'cd /opt/recipeops && ./backup.sh'
+```
+
+If backup fails with `Permission denied`, fix the backup directory ownership once:
+
+```bash
+sudo chown -R deploy:deploy /opt/recipeops/backups
+sudo chmod 775 /opt/recipeops/backups
 ```
 
 Restore:
