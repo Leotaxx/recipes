@@ -73,4 +73,4 @@ docker compose up -d --force-recreate nginx
 docker compose exec -T nginx nginx -s reload || docker compose restart nginx
 
 echo "Deployed $IMAGE_TAG to $NEXT_COLOR. Previous active color was $CURRENT_COLOR."
-echo "Rollback: ACTIVE_COLOR=$CURRENT_COLOR ./rollback.sh"
+echo "Rollback: ./rollback.sh $CURRENT_COLOR"

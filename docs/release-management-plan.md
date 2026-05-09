@@ -168,7 +168,7 @@ Hetzner scaling is mainly vertical for this implementation: resize the VM or mov
 
 ### Rollback Plan
 
-Rollback is handled by `rollback.sh`. It rewrites Nginx to point back to the previous color and force-recreates the gateway. Because both colors remain running after deployment, rollback does not require rebuilding or pulling an old image. Database migrations should remain backward-compatible for at least one release so traffic rollback remains safe.
+Rollback is handled by `rollback.sh`. By default it switches to the opposite of the current `ACTIVE_COLOR`; it can also target a specific color with `./rollback.sh blue` or `./rollback.sh green`. It rewrites Nginx to point back to the selected color and force-recreates the gateway. Because both colors remain running after deployment, rollback does not require rebuilding or pulling an old image. Database migrations should remain backward-compatible for at least one release so traffic rollback remains safe.
 
 ### Backup and Restore Strategy
 

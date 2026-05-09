@@ -76,10 +76,10 @@ http://SERVER_IP:8080
 
 ```bash
 cd /opt/recipeops
-ACTIVE_COLOR=blue ./rollback.sh
+./rollback.sh
 ```
 
-Use `green` instead if green is the known-good color.
+The script defaults to the opposite of the current `ACTIVE_COLOR`. To force a specific target, run `./rollback.sh blue` or `./rollback.sh green`.
 
 ## 6. Backup and Recovery Proof
 

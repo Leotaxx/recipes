@@ -139,10 +139,15 @@ ssh deploy@SERVER_IP 'cat /opt/recipeops/.env'
 Switch traffic back:
 
 ```bash
-ssh deploy@SERVER_IP 'cd /opt/recipeops && ACTIVE_COLOR=blue ./rollback.sh'
+ssh deploy@SERVER_IP 'cd /opt/recipeops && ./rollback.sh'
 ```
 
-Use `green` instead if green is the known-good color.
+By default, `rollback.sh` switches to the opposite of the current `ACTIVE_COLOR`. To force a specific target:
+
+```bash
+ssh deploy@SERVER_IP 'cd /opt/recipeops && ./rollback.sh blue'
+ssh deploy@SERVER_IP 'cd /opt/recipeops && ./rollback.sh green'
+```
 
 ## Backup and Restore
 

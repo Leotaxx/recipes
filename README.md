@@ -90,10 +90,10 @@ Rollback:
 
 ```bash
 cd /opt/recipeops
-ACTIVE_COLOR=blue ./rollback.sh
+./rollback.sh
 ```
 
-Use `green` instead if green is the known-good color.
+By default this switches to the opposite color from the current `ACTIVE_COLOR`. To force a specific target, use `./rollback.sh blue` or `./rollback.sh green`.
 
 ## Terraform Azure Alternative
 

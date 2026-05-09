@@ -99,10 +99,10 @@ Show the rollback command:
 
 ```bash
 cd /opt/recipeops
-ACTIVE_COLOR=blue ./rollback.sh
+./rollback.sh
 ```
 
-Use `green` instead if green is the known-good color.
+The script switches to the opposite of the current `ACTIVE_COLOR`. Use `./rollback.sh blue` or `./rollback.sh green` when you want to force a specific target.
 
 Key point to say: rollback is a traffic switch, not a rebuild. This is faster and safer.
 
