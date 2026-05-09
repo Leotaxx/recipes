@@ -5,6 +5,7 @@
 \usepackage{lmodern}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{xurl}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{booktabs}
@@ -19,6 +20,7 @@
   linkcolor=blue!55!black,
   urlcolor=blue!55!black
 }
+\urlstyle{same}
 
 \definecolor{codegray}{RGB}{246,248,250}
 \definecolor{rulegray}{RGB}{210,215,220}
@@ -50,10 +52,9 @@
   \vspace*{2cm}
   {\Huge\bfseries Release Management Plan\\[0.35cm]}
   {\LARGE RecipeOps Microservice CI/CD\\[1.2cm]}
-  {\large Enterprise Computing \& Digital Transformation\\[0.4cm]}
-  {\large Continuous Integration, Delivery, Blue/Green Deployment, and Recovery Plan\\[2cm]}
+  {\large Xinyu Yuan\\[0.4cm]}
+  {\large TU Dublin DevOps\\[2cm]}
   \vfill
-  {\large Generated from \texttt{docs/release-management-plan.md}}\\[0.2cm]
   {\large \today}
 \end{titlepage}
 \tableofcontents
@@ -320,4 +321,19 @@ GHCR package privacy blocks image pulls & Medium & Use \texttt{GHCR\_TOKEN} with
 \section{Conclusion}
 
 RecipeOps demonstrates an enterprise-style release management approach for a small microservice application. The working CD route proves automated tests, immutable image builds, vulnerability scanning, GHCR publishing, SSH-based release orchestration, blue/green traffic switching, rollback, and database backup/restore. Azure Terraform remains as the managed cloud IaC option, while Hetzner provides the practical demonstrated deployment path for the coursework environment.
+
+\appendix
+\section{Deployment Evidence}
+
+The following links support the deployment demonstration and provide direct evidence of the working CI/CD pipeline and live service endpoint.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.28\linewidth}>{\raggedright\arraybackslash}p{0.66\linewidth}@{}}
+\toprule
+\textbf{Evidence} & \textbf{URL} \\
+\midrule
+\endhead
+GitHub Actions deployment job & \url{https://github.com/Leotaxx/recipes/actions/runs/25599395902/job/75150734847} \\
+Live RecipeOps deployment & \url{http://62.238.23.123} \\
+\bottomrule
+\end{longtable}
 \end{document}
