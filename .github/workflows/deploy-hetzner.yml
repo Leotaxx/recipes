@@ -1,33 +1,66 @@
-- name: Full cleanup old deployment
-  env:
-    HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
-    HETZNER_USER: ${{ secrets.HETZNER_USER }}
-    HETZNER_PORT: ${{ secrets.HETZNER_PORT || '22' }}
-  run: |
-    ssh -i ~/.ssh/hetzner -p "$HETZNER_PORT" "$HETZNER_USER@$HETZNER_HOST" << 'EOF'
+name: cleanup-hetzner
 
-      echo "Stopping all recipeops containers..."
+on:
+  workflow_dispatch:
 
-      docker ps -aq --filter "name=recipes" | xargs -r docker rm -f
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
 
-      echo "Removing recipeops images..."
+    steps:
+      - name: Configure SSH
+        env:
+          HETZNER_SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_PORT: ${{ secrets.HETZNER_PORT || '22' }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$HETZNER_SSH_KEY" > ~/.ssh/hetzner
+          chmod 600 ~/.ssh/hetzner
+          ssh-keyscan -p "$HETZNER_PORT" "$HETZNER_HOST" >> ~/.ssh/known_hosts
 
-      docker images "ghcr.io/leotaxx/recipes/*" -q | xargs -r docker rmi -f
+      - name: Cleanup deployment
+        env:
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          HETZNER_PORT: ${{ secrets.HETZNER_PORT || '22' }}
+        run: |
+          ssh -i ~/.ssh/hetzner -p "$HETZNER_PORT" "$HETZNER_USER@$HETZNER_HOST" << 'EOF'
 
-      echo "Removing unused docker resources..."
+            echo "==================================="
+            echo "STOPPING ALL RECIPES CONTAINERS"
+            echo "==================================="
 
-      docker system prune -af --volumes
+            docker ps -aq --filter "name=recipes" | xargs -r docker rm -f || true
 
-      echo "Removing deployment folder..."
+            echo "==================================="
+            echo "REMOVING RECIPES IMAGES"
+            echo "==================================="
 
-      rm -rf /opt/recipeops/*
+            docker images "ghcr.io/leotaxx/recipes/*" -q | xargs -r docker rmi -f || true
 
-      echo "Freeing common app ports..."
+            echo "==================================="
+            echo "REMOVING UNUSED DOCKER RESOURCES"
+            echo "==================================="
 
-      sudo lsof -t -i:80 | xargs -r kill -9 || true
-      sudo lsof -t -i:3000 | xargs -r kill -9 || true
-      sudo lsof -t -i:5000 | xargs -r kill -9 || true
+            docker system prune -af --volumes || true
 
-      echo "Cleanup complete."
+            echo "==================================="
+            echo "REMOVING DEPLOYMENT FILES"
+            echo "==================================="
 
-    EOF
+            rm -rf /opt/recipeops/* || true
+
+            echo "==================================="
+            echo "FREEING PORTS"
+            echo "==================================="
+
+            sudo lsof -t -i:80 | xargs -r kill -9 || true
+            sudo lsof -t -i:3000 | xargs -r kill -9 || true
+            sudo lsof -t -i:5000 | xargs -r kill -9 || true
+
+            echo "==================================="
+            echo "CLEANUP COMPLETE"
+            echo "==================================="
+
+          EOF
